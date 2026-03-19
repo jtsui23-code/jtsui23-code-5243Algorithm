@@ -28,22 +28,27 @@ protected:
     // Recursive insert helper
     bool insert(Node *&node, int value)
     {
-
         // comparison++
+        c.comparisons++;
         if (!node)
         {
             // structural_ops++
+            c.structural_ops++;
             node = new Node(value);
             return true;
         }
 
+        
         // comparison++
+        c.comparisons++;
         if (value < node->data)
         {
 
             return insert(node->left, value);
         }
+
         // comparison++
+        c.comparisons++;
         if (value > node->data)
         {
             return insert(node->right, value);
@@ -172,9 +177,20 @@ public:
     {
     }
 
+    void reset(){
+
+        // Resets the Counters and the Binary Search Tree
+        c = {};
+        clear(root);
+    }
+
     virtual ~Bst()
     {
         clear(root);
+    }
+
+    Counters getCounters(){
+        return c;
     }
 
     void runJobFile(std::string fname)
@@ -206,6 +222,7 @@ public:
     bool insert(int value)
     {
         // insert++
+        c.inserts++;
         return insert(root, value);
     }
 

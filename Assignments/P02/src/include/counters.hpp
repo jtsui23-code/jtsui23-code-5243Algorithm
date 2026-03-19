@@ -3,6 +3,7 @@
 // ------------------------------
 
 #pragma once
+#include <iostream>
 
 struct Counters {
     long long comparisons = 0;
@@ -11,4 +12,10 @@ struct Counters {
     long long deletes = 0;
     long long lookups = 0;
     long long resize_events = 0;
+
+    friend ostream& operator <<(ostream& os, const Counters &o){
+        return os <<"Comparisons: "<< o.comparisons<<"Structural OPs: "<<o.structural_ops<<"Inserts: "<<o.inserts<<std::endl;
+    }
+
+    void save(){}
 };
