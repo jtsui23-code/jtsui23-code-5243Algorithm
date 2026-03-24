@@ -1,116 +1,84 @@
-// Standard library utilities used throughout the program
-#include <algorithm> // sort, shuffle
+#include <algorithm>
 #include <fstream>
-#include <functional>    // std::function
-#include <iostream>      // cout, cerr
-#include <random>        // random number generation
-#include <string>        // std::string
-#include <unordered_map> // hash map
-#include <vector>        // dynamic arrays
+#include <functional>
+#include <iomanip>
+#include <iostream>
+#include <optional>
+#include <random>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
-// Third-party libraries
+#include "json.hpp"
+#include "termcolor.hpp"
+#include "usagePrinter.hpp"
 
-#include "json.hpp"         // nlohmann JSON library
-#include "termcolor.hpp"    // colored terminal output (optional visual enhancement)
-#include "usagePrinter.hpp" //
-
+using json = nlohmann::json;
 using namespace std;
 
-// Alias to make JSON type shorter to write
-using json = nlohmann::json;
-
 // -------------------------------------------------------------
-// Operation type
+// Unified operation record
 // -------------------------------------------------------------
-// Represents a single operation that will be performed on a data structure.
-// Example operations might be:
+// Project 1 (set/dictionary) uses:
+//   insert / contains / delete   with a value
 //
-//   insert 42
-//   contains 17
-//   delete 9
+// Project 2 (priority queue) uses:
+//   push  with priority + value
+//   peek  with no payload
+//   pop   with no payload
 //
-// Each Op object stores:
-//   - the operation name
-//   - the integer value associated with the operation
-//
+// We keep one JSON shape and only emit fields that are present.
 struct Op {
     std::string op;
-    int value;
+    std::optional<int> value;
+    std::optional<int> priority;
 };
 
-// -------------------------------------------------------------
-// JSON conversion helper
-// -------------------------------------------------------------
-// This function allows automatic conversion of Op -> JSON.
-//
-// Example:
-//      Op o{"insert", 42};
-//      json j = o;
-//
-// Result:
-//      {"op":"insert","value":42}
-//
 void to_json(json &j, const Op &o) {
-    j = json{{"op", o.op}, {"value", o.value}};
+    j = json{{"op", o.op}};
+
+    if (o.value.has_value()) {
+        j["value"] = *o.value;
+    }
+
+    if (o.priority.has_value()) {
+        j["priority"] = *o.priority;
+    }
 }
 
 // -------------------------------------------------------------
-// WorkloadGenerator
+// Workload generator
 // -------------------------------------------------------------
-//
-// This class generates different types of workloads used for
-// benchmarking data structures.
-//
-// A "workload" is simply a sequence of operations such as:
-//
-//      insert
-//      contains
-//      delete
-//
-// Different workloads simulate different real-world behaviors.
-//
 class WorkloadGenerator {
 private:
-    // Seed used for reproducible randomness
     int seed;
-
-    // Multiplier controlling the range of random values
     int valueRangeMult;
 
-    // ---------------------------------------------------------
-    // RNG generator
-    // ---------------------------------------------------------
-    // Returns a fresh random number generator initialized with
-    // the same seed each time.
-    //
-    // This ensures repeatability so that experiments can be
-    // reproduced exactly.
-    //
     std::mt19937 rng() const {
         return std::mt19937(seed);
     }
 
-    // ---------------------------------------------------------
-    // Generate random integer values
-    // ---------------------------------------------------------
-    //
-    // Generates "count" random integers in the range:
-    //
-    //      [0 , valueRangeMult * n]
-    //
-    // Used by workloads to create insert / lookup values.
-    //
     std::vector<int> genValues(int n, int count) const {
-
         std::mt19937 r = rng();
-
-        int hi = valueRangeMult * n;
-
+        int hi = std::max(1, valueRangeMult * n);
         std::uniform_int_distribution<int> dist(0, hi);
 
         std::vector<int> values;
+        values.reserve(count);
 
-        // Reserve memory in advance for efficiency
+        for (int i = 0; i < count; i++) {
+            values.push_back(dist(r));
+        }
+
+        return values;
+    }
+
+    std::vector<int> genPriorities(int n, int count) const {
+        std::mt19937 r(seed + 17);
+        int hi = std::max(1, n / 2);
+        std::uniform_int_distribution<int> dist(0, hi);
+
+        std::vector<int> values;
         values.reserve(count);
 
         for (int i = 0; i < count; i++) {
@@ -121,153 +89,87 @@ private:
     }
 
 public:
-    // ---------------------------------------------------------
-    // Constructor
-    // ---------------------------------------------------------
     WorkloadGenerator(int seed_ = 42, int valueRangeMult_ = 10)
         : seed(seed_), valueRangeMult(valueRangeMult_) {}
 
     // ---------------------------------------------------------
-    // Workload A
+    // Project 1: set / dictionary workloads
     // ---------------------------------------------------------
-    //
-    // Random inserts followed by random lookups
-    //
-    // Pattern:
-    //
-    //      insert
-    //      insert
-    //      insert
-    //      ...
-    //      contains
-    //      contains
-    //
-    std::vector<Op> workloadA(int n) const {
-
+    std::vector<Op> setWorkloadA(int n) const {
         auto inserts = genValues(n, n);
         auto lookups = genValues(n, n);
 
         std::vector<Op> ops;
-
-        // Reserve capacity to avoid reallocation
         ops.reserve(2 * n);
 
         for (int x : inserts) {
-            ops.push_back({"insert", x});
+            ops.push_back({"insert", x, std::nullopt});
         }
 
         for (int x : lookups) {
-            ops.push_back({"contains", x});
+            ops.push_back({"contains", x, std::nullopt});
         }
 
         return ops;
     }
 
-    // ---------------------------------------------------------
-    // Workload B
-    // ---------------------------------------------------------
-    //
-    // Same as workload A except inserts are sorted first.
-    //
-    // This often stresses ordered data structures differently
-    // (e.g., BSTs without balancing).
-    //
-    std::vector<Op> workloadB(int n) const {
-
+    std::vector<Op> setWorkloadB(int n) const {
         auto inserts = genValues(n, n);
-
-        // Sorted insertion pattern
         std::sort(inserts.begin(), inserts.end());
 
         auto lookups = genValues(n, n);
 
         std::vector<Op> ops;
-
         ops.reserve(2 * n);
 
         for (int x : inserts) {
-            ops.push_back({"insert", x});
+            ops.push_back({"insert", x, std::nullopt});
         }
 
         for (int x : lookups) {
-            ops.push_back({"contains", x});
+            ops.push_back({"contains", x, std::nullopt});
         }
 
         return ops;
     }
 
-    // ---------------------------------------------------------
-    // Workload C
-    // ---------------------------------------------------------
-    //
-    // Mixed workload with random ordering of operations.
-    //
-    // Operation mix:
-    //   50% contains
-    //   25% insert
-    //   25% delete
-    //
-    // Deletes only occur if something exists in the population.
-    //
-    std::vector<Op> workloadC(int n) const {
-
+    std::vector<Op> setWorkloadC(int n) const {
         std::mt19937 r = rng();
-
-        int hi = valueRangeMult * n;
-
+        int hi = std::max(1, valueRangeMult * n);
         std::uniform_int_distribution<int> dist(0, hi);
 
         int totalOps = 2 * n;
-
         int numContains = totalOps / 2;
         int numInsert = totalOps / 4;
         int numDelete = totalOps - numContains - numInsert;
 
         std::vector<std::string> opTypes;
-
         opTypes.reserve(totalOps);
-
         opTypes.insert(opTypes.end(), numContains, "contains");
         opTypes.insert(opTypes.end(), numInsert, "insert");
         opTypes.insert(opTypes.end(), numDelete, "delete");
-
-        // Randomize the order of operations
         std::shuffle(opTypes.begin(), opTypes.end(), r);
 
         std::vector<Op> ops;
-
         ops.reserve(totalOps);
-
-        // Keeps track of values that were inserted
         std::vector<int> population;
+        population.reserve(n);
 
         for (const auto &op : opTypes) {
-
             int x = dist(r);
 
             if (op == "insert") {
-
                 population.push_back(x);
-                ops.push_back({"insert", x});
-
+                ops.push_back({"insert", x, std::nullopt});
             } else if (op == "contains") {
-
-                ops.push_back({"contains", x});
-
-            } else { // delete
-
-                // Only delete if something exists
+                ops.push_back({"contains", x, std::nullopt});
+            } else {
                 if (!population.empty()) {
-
                     int y = population.back();
                     population.pop_back();
-
-                    ops.push_back({"delete", y});
-
+                    ops.push_back({"delete", y, std::nullopt});
                 } else {
-
-                    // fallback to contains if nothing to delete
-                    ops.push_back({"contains", x});
+                    ops.push_back({"contains", x, std::nullopt});
                 }
             }
         }
@@ -275,117 +177,190 @@ public:
         return ops;
     }
 
-    // ---------------------------------------------------------
-    // Workload D
-    // ---------------------------------------------------------
-    //
-    // Insert n items then perform heavy lookup activity.
-    //
-    // Pattern:
-    //
-    //      n inserts
-    //      5n lookups
-    //
-    // Useful for read-heavy workloads.
-    //
-    std::vector<Op> workloadD(int n) const {
-
+    std::vector<Op> setWorkloadD(int n) const {
         auto inserts = genValues(n, n);
         auto lookups = genValues(n, 5 * n);
 
         std::vector<Op> ops;
-
         ops.reserve(6 * n);
 
         for (int x : inserts) {
-            ops.push_back({"insert", x});
+            ops.push_back({"insert", x, std::nullopt});
         }
 
         for (int x : lookups) {
-            ops.push_back({"contains", x});
+            ops.push_back({"contains", x, std::nullopt});
+        }
+
+        return ops;
+    }
+
+    // ---------------------------------------------------------
+    // Project 2: priority queue workloads
+    // ---------------------------------------------------------
+    // A: bulk push then drain with pop
+    std::vector<Op> pqWorkloadA(int n) const {
+        auto priorities = genPriorities(n, n);
+        auto values = genValues(n, n);
+
+        std::vector<Op> ops;
+        ops.reserve(2 * n);
+
+        for (int i = 0; i < n; i++) {
+            ops.push_back({"push", values[i], priorities[i]});
+        }
+
+        for (int i = 0; i < n; i++) {
+            ops.push_back({"pop", std::nullopt, std::nullopt});
+        }
+
+        return ops;
+    }
+
+    // B: sorted-priority pushes then drain
+    std::vector<Op> pqWorkloadB(int n) const {
+        auto priorities = genPriorities(n, n);
+        auto values = genValues(n, n);
+        std::sort(priorities.begin(), priorities.end());
+
+        std::vector<Op> ops;
+        ops.reserve(2 * n);
+
+        for (int i = 0; i < n; i++) {
+            ops.push_back({"push", values[i], priorities[i]});
+        }
+
+        for (int i = 0; i < n; i++) {
+            ops.push_back({"pop", std::nullopt, std::nullopt});
+        }
+
+        return ops;
+    }
+
+    // C: mixed live queue
+    // 50% peek, 30% push, 20% pop. Empty queue falls back to push.
+    std::vector<Op> pqWorkloadC(int n) const {
+        std::mt19937 r = rng();
+        int totalOps = 3 * n;
+        int numPeek = (totalOps * 50) / 100;
+        int numPush = (totalOps * 30) / 100;
+        int numPop = totalOps - numPeek - numPush;
+
+        int hiValue = std::max(1, valueRangeMult * n);
+        int hiPriority = std::max(1, n / 2);
+        std::uniform_int_distribution<int> valueDist(0, hiValue);
+        std::uniform_int_distribution<int> priorityDist(0, hiPriority);
+
+        std::vector<std::string> opTypes;
+        opTypes.reserve(totalOps);
+        opTypes.insert(opTypes.end(), numPeek, "peek");
+        opTypes.insert(opTypes.end(), numPush, "push");
+        opTypes.insert(opTypes.end(), numPop, "pop");
+        std::shuffle(opTypes.begin(), opTypes.end(), r);
+
+        std::vector<Op> ops;
+        ops.reserve(totalOps);
+        int currentSize = 0;
+
+        for (const auto &op : opTypes) {
+            if (op == "push") {
+                ops.push_back({"push", valueDist(r), priorityDist(r)});
+                currentSize++;
+            } else if (op == "peek") {
+                if (currentSize > 0) {
+                    ops.push_back({"peek", std::nullopt, std::nullopt});
+                } else {
+                    ops.push_back({"push", valueDist(r), priorityDist(r)});
+                    currentSize++;
+                }
+            } else {
+                if (currentSize > 0) {
+                    ops.push_back({"pop", std::nullopt, std::nullopt});
+                    currentSize--;
+                } else {
+                    ops.push_back({"push", valueDist(r), priorityDist(r)});
+                    currentSize++;
+                }
+            }
+        }
+
+        return ops;
+    }
+
+    // D: build once, then steady-state service
+    // n pushes, then 2n cycles of peek/pop/push to keep queue alive
+    std::vector<Op> pqWorkloadD(int n) const {
+        std::mt19937 r = rng();
+        int hiValue = std::max(1, valueRangeMult * n);
+        int hiPriority = std::max(1, n / 2);
+        std::uniform_int_distribution<int> valueDist(0, hiValue);
+        std::uniform_int_distribution<int> priorityDist(0, hiPriority);
+
+        std::vector<Op> ops;
+        ops.reserve(7 * n);
+
+        for (int i = 0; i < n; i++) {
+            ops.push_back({"push", valueDist(r), priorityDist(r)});
+        }
+
+        for (int i = 0; i < 2 * n; i++) {
+            ops.push_back({"peek", std::nullopt, std::nullopt});
+            ops.push_back({"pop", std::nullopt, std::nullopt});
+            ops.push_back({"push", valueDist(r), priorityDist(r)});
         }
 
         return ops;
     }
 };
 
-// -------------------------------------------------------------
-// Tiny command-line parser
-// -------------------------------------------------------------
-//
-// Parses arguments like:
-//
-//   ./workload_generator -w B -n 100 --preview 20 --json
-//
 struct Args {
-
-    std::string workload = "A";
-
+    std::string mode = "set";   // set | pq
+    std::string workload = "A"; // A | B | C | D
     int size = 10;
-
     int preview = 20;
-
     bool emitJson = false;
-
     std::string savefile = "";
 
-    friend ostream &operator<<(ostream &os, const Args &c) {
-        return os << "[w: " << c.workload << ",s: " << c.size << ",p: " << c.preview << ",ej: " << c.emitJson << ",s: " << c.savefile << "]";
+    friend std::ostream &operator<<(std::ostream &os, const Args &a) {
+        return os << "[mode:" << a.mode
+                  << ", workload:" << a.workload
+                  << ", size:" << a.size
+                  << ", preview:" << a.preview
+                  << ", json:" << a.emitJson
+                  << ", save:" << a.savefile << "]";
     }
 };
 
 Args parseArgs(int argc, char *argv[]) {
-
     Args args;
 
     for (int i = 1; i < argc; i++) {
-
         std::string s = argv[i];
 
-        if ((s == "-w" || s == "--workload") && i + 1 < argc) {
-
+        if ((s == "-m" || s == "--mode") && i + 1 < argc) {
+            args.mode = argv[++i];
+        } else if ((s == "-w" || s == "--workload") && i + 1 < argc) {
             args.workload = argv[++i];
-
         } else if ((s == "-n" || s == "--size") && i + 1 < argc) {
-
             args.size = std::stoi(argv[++i]);
-
         } else if ((s == "-p" || s == "--preview") && i + 1 < argc) {
-
             args.preview = std::stoi(argv[++i]);
-
         } else if (s == "--json") {
-
             args.emitJson = true;
-
-        } else if (s == "--save") {
-
+        } else if ((s == "-s" || s == "--save") && i + 1 < argc) {
             args.savefile = argv[++i];
-
         } else if (s == "-h" || s == "--help") {
-
-            // std::cout
-            //     << "Usage:\n"
-            //     << "  ./workload_generator [-w A|B|C|D] [-n SIZE] [--preview K] [--json]\n\n"
-            //     << "Options:\n"
-            //     << "  -w, --workload   Workload type (A, B, C, D)\n"
-            //     << "  -n, --size       Base problem size n\n"
-            //     << "  --preview        Number of operations to preview\n"
-            //     << "  --json           Print all operations as JSON\n"
-
             UsagePrinter help;
-
-            help.add("-w, --workload", "<TYPE>", "Workload type (A,B,C,D)");
-            help.add("-n, --size", "<N>", "Base problem size N=int");
-            help.add("--preview", "<K>", "Preview operations K=int");
-            help.add("--json", "", "Emit JSON output");
-            help.add("-s, ---save", "<FILENAME>", "Save output to a file");
-            help.add("-h, --help", "", "Show help message");
-            help.add("-p,--preview", "<n>", "Preview the data ");
-            help.addExample("./workload_generator --json -w C -n 1000 > workload.json");
-            help.addExample("./workload_generator --json -workload B -size 5000 --save workload_B_5000.json");
+            help.add("-m, --mode", "<set|pq>", "Generator family: set (Project 1) or pq (Project 2)");
+            help.add("-w, --workload", "<A|B|C|D>", "Workload type");
+            help.add("-n, --size", "<N>", "Base problem size");
+            help.add("-p, --preview", "<K>", "Preview first K operations");
+            help.add("--json", "", "Emit JSON to stdout");
+            help.add("-s, --save", "<FILENAME>", "Save prettified JSON to a file");
+            help.addExample("./workload_generator --mode set -w C -n 1000 --json > set_C_1000.json");
+            help.addExample("./workload_generator --mode pq  -w B -n 1000 --json > pq_B_1000.json");
+            help.addExample("./workload_generator --mode pq -w D -n 25 --preview 20");
             help.print("workload_generator");
-
             std::exit(0);
         }
     }
@@ -393,137 +368,79 @@ Args parseArgs(int argc, char *argv[]) {
     return args;
 }
 
-// ---------------------------------------------------------
-// JSON output mode
-//
-// Why this exists
-//
-//      This mode is meant for other programs to consume, not humans.
-//
-// Example pipeline:
-//
-//      ./workload_generator --json -w C -n 1000 > workload.json
-//
-// Runs the generator and creates 1000 jobs of type C and writes them into a file called `workload.json`
-//
-//      ./workload_generator --json -w C -n 1000 | ./linkedListTest
-//
-// Runs the generator creating same workload as example 1, but is now piping the output to the linkelist
-//  executable to be processed.
-// ---------------------------------------------------------
-//
-void emitJson(auto ops) {
-
+template <typename T>
+void emitJson(const T &ops) {
     json j = ops;
-
-    for (auto op : j) {
-        std::cout << op;
-    }
-
-    // std::cout << j.dump(2) << "\n";
+    cout << j.dump(2) << "\n";
 }
 
-// -------------------------------------------------------------
-// main
-// -------------------------------------------------------------
+void usage() {
+    cout << "./workload_generator --mode set -w C -n 1000 --json > set_C_1000.json\n";
+    cout << "./workload_generator --mode pq  -w B -n 1000 --json > pq_B_1000.json\n";
+    cout << "./workload_generator --mode pq  -w D -n 25 --preview 20\n";
+}
+
 int main(int argc, char *argv[]) {
-
-    // Parse command line arguments
     Args args = parseArgs(argc, argv);
-
-    // Create workload generator
     WorkloadGenerator gen(42);
 
-    // ---------------------------------------------------------
-    // Workload dispatch table
-    // ---------------------------------------------------------
-    //
-    // This map connects workload names to the functions that
-    // generate them.
-    //
-    // Conceptually it behaves like:
-    //
-    //      workloads["A"] → gen.workloadA
-    //      workloads["B"] → gen.workloadB
-    //      workloads["C"] → gen.workloadC
-    //      workloads["D"] → gen.workloadD
-    //
-    // This allows dynamic selection of a workload by name.
-    //
-    std::unordered_map<std::string, std::function<std::vector<Op>(int)>> workloads = {
+    std::unordered_map<std::string, std::function<std::vector<Op>(int)>> workloads;
 
-        {"A", [&](int n) { return gen.workloadA(n); }},
-        {"B", [&](int n) { return gen.workloadB(n); }},
-        {"C", [&](int n) { return gen.workloadC(n); }},
-        {"D", [&](int n) { return gen.workloadD(n); }}
-
-    };
-
-    // ---------------------------------------------------------
-    // Validate workload selection
-    // ---------------------------------------------------------
-    // contains() requires C++20
-    //
-    if (!workloads.contains(args.workload)) {
-
-        std::cerr << "Error: workload must be one of A, B, C, D\n";
-
+    if (args.mode == "set") {
+        workloads = {
+            {"A", [&](int n) { return gen.setWorkloadA(n); }},
+            {"B", [&](int n) { return gen.setWorkloadB(n); }},
+            {"C", [&](int n) { return gen.setWorkloadC(n); }},
+            {"D", [&](int n) { return gen.setWorkloadD(n); }},
+        };
+    } else if (args.mode == "pq") {
+        workloads = {
+            {"A", [&](int n) { return gen.pqWorkloadA(n); }},
+            {"B", [&](int n) { return gen.pqWorkloadB(n); }},
+            {"C", [&](int n) { return gen.pqWorkloadC(n); }},
+            {"D", [&](int n) { return gen.pqWorkloadD(n); }},
+        };
+    } else {
+        std::cerr << "Error: mode must be 'set' or 'pq'.\n";
         return 1;
     }
 
-    // ---------------------------------------------------------
-    // Generate workload operations
-    // ---------------------------------------------------------
-    //
-    // Equivalent to calling:
-    //
-    //      gen.workloadA(n)
-    //      gen.workloadB(n)
-    //      gen.workloadC(n)
-    //      gen.workloadD(n)
-    //
+    if (workloads.find(args.workload) == workloads.end()) {
+        std::cerr << "Error: workload must be one of A, B, C, D.\n";
+        return 1;
+    }
+
     auto ops = workloads[args.workload](args.size);
 
     if (args.emitJson) {
         emitJson(ops);
     }
 
-    if (args.preview && args.savefile.length() == 0) {
-        // ---------------------------------------------------------
-        // Preview mode
-        // ---------------------------------------------------------
-        //
-        std::cout << "\n----------------------------------\n";
-        std::cout << "Workload: " << args.workload << "\n";
-        std::cout << "n: " << args.size << "\n";
-        std::cout << "Total operations: " << ops.size() << "\n";
-        std::cout << "----------------------------------\n\n";
+    if (args.preview > 0 && args.savefile.empty()) {
+        cout << "\n----------------------------------\n";
+        cout << "Mode: " << args.mode << "\n";
+        cout << "Workload: " << args.workload << "\n";
+        cout << "n: " << args.size << "\n";
+        cout << "Total operations: " << ops.size() << "\n";
+        cout << "----------------------------------\n\n";
 
-        int preview = std::min<int>(args.preview, static_cast<int>(ops.size()));
+        int previewCount = std::min<int>(args.preview, static_cast<int>(ops.size()));
 
-        // Print first preview operations
-        for (int i = 0; i < preview; i++) {
-
+        for (int i = 0; i < previewCount; i++) {
             json j = ops[i];
-
-            std::cout << j.dump() << "\n";
+            cout << j.dump() << "\n";
         }
 
-        if (preview < static_cast<int>(ops.size())) {
-            std::cout << "...\n";
+        if (previewCount < static_cast<int>(ops.size())) {
+            cout << "...\n";
         }
     }
 
-    // Example:
-    //./work_generator -w A -n 1000 --save work_A_1000.json
-    //
-    // Will save a file called work_A_1000.json with jobtype A and 1000 jobs.
-    if (args.savefile.length() > 0) {
-        cout << "Saving json to: " << args.savefile << endl;
+    if (!args.savefile.empty()) {
+        cout << "Saving json to: " << args.savefile << "\n";
         json j = ops;
-        // write prettified JSON to another file
-        std::ofstream o(args.savefile);
-        o << std::setw(4) << j << std::endl;
+        std::ofstream out(args.savefile);
+        out << std::setw(4) << j << endl;
     }
 
     return 0;
