@@ -1,21 +1,27 @@
 #!/bin/bash
 
-# Define the workloads and sizes based on your generated files
-WORKLOADS=("A" "B" "C" "D")
+# Ensure the driver is compiled first
+g++ -std=c++20 -Iinclude drivers/drive_load_Bst.cpp -o dbst
+
+# Create a folder for results if it doesn't exist
+mkdir -p results
+
+# Arrays of your workload types and sizes
+TYPES=("A" "B" "C" "D")
 SIZES=(1000 5000 10000 20000)
 
-# Loop through each combination
-for W in "${WORKLOADS[@]}"; do
-    for N in "${SIZES[@]}"; do
-        FILE="work_files/workload_${W}_${N}.json"
-        
-        # Check if the file exists before running
-        if [ -f "$FILE" ]; then
-            echo "-------------------------------------------"
-            echo "Running Workload $W with Size $N..."
-            ./dbst "$FILE"
+for T in "${TYPES[@]}"; do
+    for S in "${SIZES[@]}"; do
+        INPUT="work_files/workload_${T}_${S}.json"
+        OUTPUT="results/bst_results_${T}_${S}.json"
+
+        if [ -f "$INPUT" ]; then
+            echo "Processing $INPUT..."
+            ./dbst "$INPUT" "$OUTPUT"
         else
-            echo "Skipping $FILE: File not found."
+            echo "Skip: $INPUT not found."
         fi
     done
 done
+
+echo "All tests complete. Check the 'results' folder."

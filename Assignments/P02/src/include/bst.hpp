@@ -23,7 +23,9 @@ protected:
     };
 
     Node *root;
-    Counters c{};
+
+    // Need to add mutable because counter is used inside of const methods
+    mutable Counters c{};
 
     // Recursive insert helper
     bool insert(Node *&node, int value)
@@ -63,6 +65,7 @@ protected:
     {
 
         // comparison++
+        c.comparisons++;
         if (!node)
         {
 
@@ -70,12 +73,14 @@ protected:
         }
 
         // comparison++
+        c.comparisons++;
         if (value == node->data)
         {
 
             return true;
         }
         // comparison++
+        c.comparisons++;
         if (value < node->data)
         {
 
@@ -89,9 +94,11 @@ protected:
     Node *findMin(Node *node) const
     {
         // lookup++
+        c.lookups++;
         while (node && node->left)
         {
             // comparison++
+            c.comparisons++;
             node = node->left;
         }
         return node;
@@ -102,18 +109,21 @@ protected:
     {
 
         // comparison++
+        c.comparisons++;
         if (!node)
         {
             return false;
         }
 
         // comparison++
+        c.comparisons++;
         if (value < node->data)
         {
             return erase(node->left, value);
         }
 
         // comparison++
+        c.comparisons++;
         if (value > node->data)
         {
             return erase(node->right, value);
@@ -126,6 +136,7 @@ protected:
         {
             //
             // structural_ops++
+            c.structural_ops++;
             delete node;
             node = nullptr;
             return true;
@@ -137,6 +148,7 @@ protected:
             Node *temp = node;
             node = node->right;
             // structural_ops++
+            c.structural_ops++;
             delete temp;
             return true;
         }
@@ -147,6 +159,8 @@ protected:
             Node *temp = node;
             node = node->left;
             // structural_ops++
+
+            c.structural_ops++;
             delete temp;
             return true;
         }
@@ -161,6 +175,7 @@ protected:
     void clear(Node *node)
     {
         // compare++
+        c.comparisons++;
         if (!node)
         {
             return;
@@ -169,6 +184,7 @@ protected:
         clear(node->left);
         clear(node->right);
         // structural_ops++
+        c.structural_ops++;
         delete node;
     }
 
@@ -183,6 +199,12 @@ public:
         c = {};
         clear(root);
     }
+
+    
+    void save(string filename,bool dict=true){
+        c.saveCounters(filename,dict);
+    }
+    
 
     virtual ~Bst()
     {
@@ -229,12 +251,14 @@ public:
     bool contains(int value) const
     {
         // lookup++
+        c.lookups++;
         return contains(root, value);
     }
 
     bool erase(int value)
     {
         // delete++
+        c.deletes++;
         return erase(root, value);
     }
 
