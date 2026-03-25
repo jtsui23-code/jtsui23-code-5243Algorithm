@@ -93,10 +93,6 @@ This is why sorted array lookup beats linked list — a linked list has no index
 **Inserts — O(n) due to shifting:**
 
 ```
-insert(42) into a sorted array of 10,000 elements:
-  step 1: binary search finds insertion point at index 3750  → 13 comparisons
-  step 2: shift elements 3750..9999 one position to the right → 6,250 structural ops
-  step 3: place 42 at index 3750                              → 1  structural op
 
 Across 10,000 inserts into a growing array:
   insert #1    → shift ~0    elements
