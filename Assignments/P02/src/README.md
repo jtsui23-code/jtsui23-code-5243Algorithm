@@ -12,10 +12,147 @@ All charts are grouped by workload type. Each section contains:
 
 ## Table of Contents
 
+- [Understanding the Counter Values](#understanding-the-counter-values)
 - [Workload A](#workload-a)
 - [Workload B](#workload-b)
 - [Workload C](#workload-c)
 - [Workload D](#workload-d)
+
+---
+
+## Understanding the Counter Values
+
+When you first look at the results, the counter numbers can seem shockingly large. A BST with 1,000,000+ comparisons, a hash table with millions of comparisons, or a sorted array with 90,000,000+ structural operations can all look like bugs. They are not. This section explains exactly why each structure produces the numbers it does.
+
+---
+
+### 1. The Most Important Concept: Total Cost vs. Per-Operation Cost
+
+Big-O notation like O(log n) or O(1) describes the cost of a **single operation**. The counters in these results record the **cumulative total** across every single operation in the entire workload. These are two very different things.
+
+For a workload of n = 10,000 that runs 20,000 operations (10,000 inserts + 10,000 lookups), even a perfectly efficient O(log n) structure accumulates a large total:
+
+```
+Each lookup on a 10,000-element BST costs ~log2(10,000) ≈ 13 comparisons
+10,000 lookups × 13 comparisons each = 130,000 total comparisons
+
+Inserts also accumulate as the tree grows:
+  insert #1     → tree has 1 node     → ~1  comparison
+  insert #1000  → tree has 1000 nodes  → ~10 comparisons
+  insert #10000 → tree has 10000 nodes → ~13 comparisons
+  Total insert comparisons ≈ sum of log(1) + log(2) + ... + log(10000)
+                           ≈ 10,000 × log(10,000) / 2
+                           ≈ 65,000 comparisons
+
+Grand total ≈ 65,000 (inserts) + 130,000 (lookups) = ~195,000 comparisons
+```
+
+A raw counter of 195,000 is exactly what O(log n) predicts — it is not a bug. To recover the per-operation average and verify complexity, always divide:
+
+```
+avg comparisons per op = total_comparisons / (inserts + lookups + deletes)
+
+Example: 195,000 / 20,000 = ~9.75 comparisons per op
+         log2(10,000) ≈ 13  →  reasonable for an unbalanced BST
+```
+
+### 2. Why BST Comparisons Exceed Pure log(n)
+
+A plain unbalanced BST has no rotations or rebalancing. Its depth depends entirely on the order elements are inserted. In the best case (random order) depth ≈ log(n). In the worst case (sorted or nearly sorted input) the tree degenerates into a linked list with depth = n, making every operation O(n) instead of O(log n).
+
+```
+Perfectly balanced BST with 10,000 nodes:
+  depth = log2(10,000) ≈ 13
+  avg comparisons per lookup ≈ 13
+
+Skewed BST (partially sorted input) with 10,000 nodes:
+  depth can reach 30, 40, or even hundreds
+  avg comparisons per lookup grows well above 13
+  total comparisons across all ops grows proportionally
+```
+
+This is why you may see BST comparison counts that are 2–5× higher than the O(n log n) theoretical minimum. The fix would be a self-balancing tree (AVL, Red-Black) which guarantees depth stays at log(n) regardless of insertion order.
+
+### 3. Why Sorted Array Has High Structural Ops but Fast Lookups
+
+The sorted array has a split personality — lookups are very fast but inserts and deletes are very expensive.
+
+**Lookups — O(log n) via binary search:**
+
+```
+contains(42) on an array of 10,000 elements:
+  step 1: check index 5000  → too high, search left half
+  step 2: check index 2500  → too low,  search right half
+  step 3: check index 3750  → too high, search left half
+  ...
+  found in ~13 steps regardless of where 42 lives in the array
+```
+
+This is why sorted array lookup beats linked list — a linked list has no index access and must scan from the head one node at a time (O(n)), while the sorted array can halve the search space on every step (O(log n)).
+
+**Inserts — O(n) due to shifting:**
+
+```
+insert(42) into a sorted array of 10,000 elements:
+  step 1: binary search finds insertion point at index 3750  → 13 comparisons
+  step 2: shift elements 3750..9999 one position to the right → 6,250 structural ops
+  step 3: place 42 at index 3750                              → 1  structural op
+
+Across 10,000 inserts into a growing array:
+  insert #1    → shift ~0    elements
+  insert #5000 → shift ~2500 elements on average
+  insert #10000→ shift ~5000 elements on average
+  Total structural ops ≈ n²/4 ≈ 25,000,000 for n=10,000
+```
+
+This O(n²) growth in structural ops is real and correct — it is not a counter bug. It shows exactly why sorted arrays are impractical for insert-heavy workloads at large n.
+
+### 4. Why Hash Table Lookup Can Be Worse Than Expected
+
+A hash table promises O(1) average lookup — but that guarantee only holds when the table is properly sized relative to the number of elements stored in it. The ratio of elements to buckets is called the **load factor**:
+
+```
+load factor = number of elements / number of buckets
+
+This implementation uses chaining (each bucket is a list).
+When load factor is high, each bucket holds many elements,
+and every lookup must scan that entire chain linearly.
+
+Example — HashTable initialized with 101 buckets:
+  1,000  elements →  ~10 elements per bucket  → ~10  comparisons per lookup
+  5,000  elements →  ~50 elements per bucket  → ~50  comparisons per lookup
+  10,000 elements →  ~99 elements per bucket  → ~99  comparisons per lookup
+  20,000 elements → ~198 elements per bucket  → ~198 comparisons per lookup
+
+Compare to a properly sized table (capacity ≈ n):
+  20,000 elements in 20,011 buckets → ~1 element per bucket → ~1 comparison per lookup
+```
+
+This is why the hash table comparison counts balloon at larger workload sizes. The structure itself is not broken — it is simply undersized. To fix this, pass a capacity close to the expected element count when constructing the table:
+
+```cpp
+// Instead of: HashTable hashTable;  (defaults to 101 buckets)
+HashTable hashTable(20011);  // prime number close to max expected elements
+```
+
+### 5. Why Linked List Shows 2× More Lookups Than Other Structures
+
+The linked list `insert` method checks for duplicates by calling the public `contains()` method. Since `contains()` increments the `lookups` counter, every insert silently costs one extra lookup on top of whatever explicit `contains` calls exist in the workload:
+
+```
+Workload A with n=10,000 (10,000 inserts + 10,000 explicit lookups):
+
+  10,000 inserts each call contains() internally → +10,000 lookups
+  10,000 explicit contains() calls from workload → +10,000 lookups
+  ─────────────────────────────────────────────────────────────────
+  Total lookups counter = 20,000
+
+BST / Hash Table / Sorted Array do duplicate checks inline
+without calling their public contains(), so their lookup
+counter only reflects the 10,000 explicit workload calls.
+```
+
+This is not necessarily wrong — the linked list genuinely does perform that extra scan on every insert. It is an accurate reflection of the real work being done, and it highlights another hidden cost of the linked list's design.
 
 ---
 
