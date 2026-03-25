@@ -105,7 +105,7 @@ This O(n²) growth in structural ops is real and correct — it is not a counter
 
 ### 4. Why Hash Table Lookup Can Be Worse Than Expected
 
-A hash table promises O(1) average lookup — but that guarantee only holds when the table is properly sized relative to the number of elements stored in it. The ratio of elements to buckets is called the **load factor**:
+A hash table promises O(1) average lookup — but that guarantee only holds when the table is properly sized relative to the number of elements stored in it. 
 
 ```
 load factor = number of elements / number of buckets
