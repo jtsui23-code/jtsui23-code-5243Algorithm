@@ -25,8 +25,8 @@ across four workload types (A–D) and four sizes (1K, 5K, 10K, 20K).
 
 All charts are grouped by workload type. Each section contains:
 
-- **Scaling line charts** — how each metric grows as n increases
-- **Per-size bar charts** — side-by-side comparison at each workload size
+- **Scaling line charts**: how each metric grows as n increases
+- **Per-size bar charts**: side-by-side comparison at each workload size
 
 ---
 
