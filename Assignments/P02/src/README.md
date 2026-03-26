@@ -22,7 +22,7 @@ All charts are grouped by workload type. Each section contains:
 
 ## Understanding the Counter Values
 
-When you first look at the results, the counter numbers can seem shockingly large. A BST with 1,000,000+ comparisons, a hash table with millions of comparisons, or a sorted array with 90,000,000+ structural operations can all look like bugs. They are not. This section explains exactly why each structure produces the numbers it does.
+The counter numbers can seem large like a BST with 1,000,000+ comparisons, a hash table with millions of comparisons, or a sorted array with 90,000,000+ structural operations can all look like bugs. This section explains exactly why each structure produces the numbers it does.
 
 ---
 
