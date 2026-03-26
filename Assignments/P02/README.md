@@ -16,6 +16,7 @@ There is no additional code added to count any of the stats we want to collect f
 
 - Made driver scripts for Hash Table, Linked List, Ordered Dynamic Array
 - Changed BST, Hash Table, Linked List, Ordered Dynamic Array script to all have runJobFiles() and Counters
+- [makework.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/makework.py) a Python script that creates workload from [wg](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/count_json.py) compiled workload generator code
 - [runexperiments.sh](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/runexperiments.sh) a bash script that runs the driver files with workloads
 - Be in ```./jtsui23-code-5243Algorithm/Assignments/P02/src/ and run``` and run  ```./runexperiments.sh``` to generate comparison JSONS
 - ./[charts](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/charts) folder contains charts comparing data structures
