@@ -1,16 +1,8 @@
 ## Program 2 - Comparing Lookup Type Data Structures
 
-### Provided to You
+### Descriptoin:
+This project compares BST, Hash Table, Linked List, and Sorted Array Set using different workloads and operations. The comparisons are shown as graphs.
 
-There are c++ implementations for:
-
-- Binary Search Tree
-- Hash Table
-- Linked List
-- Ordered Dynamic Array
-
-with all necessary basic functionality and small tests to show how to use each of them.
-There is no additional code added to count any of the stats we want to collect for comparing different data structures and how they handle certain types of behaviors (insert, find, delete). Below is the new folder structure:
 
 ### Deliverable
 
