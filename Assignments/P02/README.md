@@ -1,6 +1,6 @@
 ## Program 2 - Comparing Lookup Type Data Structures
 
-### Descriptoin:
+### Description:
 This project compares BST, Hash Table, Linked List, and Sorted Array Set using different workloads and operations. The comparisons are shown as graphs.
 
 
