@@ -34,6 +34,24 @@ All charts are grouped by workload type. Each section contains:
 
 ---
 
+### Strengths and Weaknesses by Metric
+
+| Structure | Comparisons | Structural Ops | Lookup Speed | Insert Speed | Delete Speed | Memory Overhead | Scales Well? |
+|---|---|---|---|---|---|---|---|
+| **BST** | 🟡 O(n log n) total, higher if unbalanced | 🟢 O(1) per insert — one node created | 🟢 O(log n) per op | 🟢 O(log n) per op | 🟢 O(log n) per op | 🟡 Pointer overhead per node | 🟡 Yes if balanced, degrades if skewed |
+| **Linked List** | 🔴 O(n²) total — every op scans from head | 🟢 O(1) per insert/delete — one node created/freed | 🔴 O(n) per op — no random access | 🔴 O(n) per op — duplicate scan | 🔴 O(n) per op — must find node first | 🟡 Pointer overhead per node | 🔴 No — all ops degrade linearly |
+| **Hash Table** | 🟢 O(1) avg if load factor low — 🔴 O(n) if undersized | 🟢 O(1) — simple push/pop on bucket chain | 🟢 O(1) avg if properly sized | 🟢 O(1) avg if properly sized | 🟢 O(1) avg if properly sized | 🟡 Wasted bucket memory if oversized | 🟢 Yes — if capacity grows with n |
+| **Sorted Array** | 🟢 O(n log n) total — binary search keeps comparisons low | 🔴 O(n²) total — every insert shifts elements | 🟢 O(log n) per op — binary search | 🔴 O(n) per op — must shift elements | 🔴 O(n) per op — must shift elements | 🟢 Compact — no pointer overhead | 🔴 No — insert/delete cost grows quadratically |
+
+### When to Use Each Structure
+
+| Structure | Best Used When | Avoid When |
+|---|---|---|
+| **BST** | You need ordered traversal and balanced insert/lookup/delete performance | Input is sorted or nearly sorted — causes skew and degrades to O(n) |
+| **Linked List** | Workload is tiny or you need frequent front insertions/deletions | n is large — all ops are O(n) and comparisons grow quadratically |
+| **Hash Table** | You need the fastest possible average-case lookup and insert | You need ordered data, or capacity is much smaller than n |
+| **Sorted Array** | Workload is lookup-heavy and insert/delete are rare | Insert or delete frequency is high — structural ops grow as O(n²) |
+
 ## Table of Contents
 
 - [Understanding the Counter Values](#understanding-the-counter-values)
