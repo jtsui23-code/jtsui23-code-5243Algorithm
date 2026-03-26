@@ -19,7 +19,7 @@ There is no additional code added to count any of the stats we want to collect f
 |  1  | [Drivers](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/drivers) | Made driver scripts for Hash Table, Linked List, and Ordered Dynamic Array |
 |  2  | [Data Structures](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/include) | Updated BST, Hash Table, Linked List, and Ordered Dynamic Array to include `runJobFiles()` and Counters |
 |  3  | [makework.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/makework.py) | Python script that creates workloads using the compiled workload generator |
-|  4  | [count_json.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/count_json.py) | Compiled workload generator used to produce workload data |
+|  4  | [count_json.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/count_json.py) | Counts number of elements in JSON to verify workload count |
 |  5  | [runexperiments.sh](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/runexperiments.sh) | Bash script that runs the driver files with generated workloads |
 |  6  | — | From `./jtsui23-code-5243Algorithm/Assignments/P02/src/`, run `./runexperiments.sh` to generate comparison JSON files |
 |  7  | [charts](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/charts) | Contains charts comparing data structures |
