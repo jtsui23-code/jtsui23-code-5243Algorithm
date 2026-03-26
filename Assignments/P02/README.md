@@ -18,6 +18,9 @@ There is no additional code added to count any of the stats we want to collect f
 - Changed BST, Hash Table, Linked List, Ordered Dynamic Array script to all have runJobFiles() and Counters
 - runexperiments.sh a bash script that runs the driver files with workloads
 - Be in ```./jtsui23-code-5243Algorithm/Assignments/P02/src/ and run``` and run  ```./runexperiments.sh``` to generate comparison JSONS
+- ./charts folder contains charts comparing data structures
+- ./results folder contains comparisons of data strucctures in JSON format 
+
 
 # Data Structure Performance Analysis
 
@@ -127,19 +130,19 @@ These charts show how each data structure scales as the workload size grows from
 
 #### Comparisons — Workload A Scaling
 
-![Comparisons scaling for Workload A](charts/line_A_comparisons.png)
+![Comparisons scaling for Workload A](src/charts/line_A_comparisons.png)
 
 #### Structural Operations — Workload A Scaling
 
-![Structural Operations scaling for Workload A](charts/line_A_structural_ops.png)
+![Structural Operations scaling for Workload A](src/charts/line_A_structural_ops.png)
 
 #### Inserts — Workload A Scaling
 
-![Inserts scaling for Workload A](charts/line_A_inserts.png)
+![Inserts scaling for Workload A](src/charts/line_A_inserts.png)
 
 #### Lookups — Workload A Scaling
 
-![Lookups scaling for Workload A](charts/line_A_lookups.png)
+![Lookups scaling for Workload A](src/charts/line_A_lookups.png)
 
 ---
 
@@ -151,73 +154,73 @@ Side-by-side comparison of all four data structures at each workload size.
 
 **Comparisons**
 
-![Comparisons for Workload A n=1,000](charts/bar_A_1000_comparisons.png)
+![Comparisons for Workload A n=1,000](src/charts/bar_A_1000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload A n=1,000](charts/bar_A_1000_structural_ops.png)
+![Structural Operations for Workload A n=1,000](src/charts/bar_A_1000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload A n=1,000](charts/bar_A_1000_inserts.png)
+![Inserts for Workload A n=1,000](src/charts/bar_A_1000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload A n=1,000](charts/bar_A_1000_lookups.png)
+![Lookups for Workload A n=1,000](src/charts/bar_A_1000_lookups.png)
 
 #### n = 5,000
 
 **Comparisons**
 
-![Comparisons for Workload A n=5,000](charts/bar_A_5000_comparisons.png)
+![Comparisons for Workload A n=5,000](src/charts/bar_A_5000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload A n=5,000](charts/bar_A_5000_structural_ops.png)
+![Structural Operations for Workload A n=5,000](src/charts/bar_A_5000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload A n=5,000](charts/bar_A_5000_inserts.png)
+![Inserts for Workload A n=5,000](src/charts/bar_A_5000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload A n=5,000](charts/bar_A_5000_lookups.png)
+![Lookups for Workload A n=5,000](src/charts/bar_A_5000_lookups.png)
 
 #### n = 10,000
 
 **Comparisons**
 
-![Comparisons for Workload A n=10,000](charts/bar_A_10000_comparisons.png)
+![Comparisons for Workload A n=10,000](src/charts/bar_A_10000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload A n=10,000](charts/bar_A_10000_structural_ops.png)
+![Structural Operations for Workload A n=10,000](src/charts/bar_A_10000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload A n=10,000](charts/bar_A_10000_inserts.png)
+![Inserts for Workload A n=10,000](src/charts/bar_A_10000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload A n=10,000](charts/bar_A_10000_lookups.png)
+![Lookups for Workload A n=10,000](src/charts/bar_A_10000_lookups.png)
 
 #### n = 20,000
 
 **Comparisons**
 
-![Comparisons for Workload A n=20,000](charts/bar_A_20000_comparisons.png)
+![Comparisons for Workload A n=20,000](src/charts/bar_A_20000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload A n=20,000](charts/bar_A_20000_structural_ops.png)
+![Structural Operations for Workload A n=20,000](src/charts/bar_A_20000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload A n=20,000](charts/bar_A_20000_inserts.png)
+![Inserts for Workload A n=20,000](src/charts/bar_A_20000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload A n=20,000](charts/bar_A_20000_lookups.png)
+![Lookups for Workload A n=20,000](src/charts/bar_A_20000_lookups.png)
 
 ---
 
@@ -231,19 +234,19 @@ These charts show how each data structure scales as the workload size grows from
 
 #### Comparisons — Workload B Scaling
 
-![Comparisons scaling for Workload B](charts/line_B_comparisons.png)
+![Comparisons scaling for Workload B](src/charts/line_B_comparisons.png)
 
 #### Structural Operations — Workload B Scaling
 
-![Structural Operations scaling for Workload B](charts/line_B_structural_ops.png)
+![Structural Operations scaling for Workload B](src/charts/line_B_structural_ops.png)
 
 #### Inserts — Workload B Scaling
 
-![Inserts scaling for Workload B](charts/line_B_inserts.png)
+![Inserts scaling for Workload B](src/charts/line_B_inserts.png)
 
 #### Lookups — Workload B Scaling
 
-![Lookups scaling for Workload B](charts/line_B_lookups.png)
+![Lookups scaling for Workload B](src/charts/line_B_lookups.png)
 
 ---
 
@@ -255,73 +258,73 @@ Side-by-side comparison of all four data structures at each workload size.
 
 **Comparisons**
 
-![Comparisons for Workload B n=1,000](charts/bar_B_1000_comparisons.png)
+![Comparisons for Workload B n=1,000](src/charts/bar_B_1000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload B n=1,000](charts/bar_B_1000_structural_ops.png)
+![Structural Operations for Workload B n=1,000](src/charts/bar_B_1000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload B n=1,000](charts/bar_B_1000_inserts.png)
+![Inserts for Workload B n=1,000](src/charts/bar_B_1000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload B n=1,000](charts/bar_B_1000_lookups.png)
+![Lookups for Workload B n=1,000](src/charts/bar_B_1000_lookups.png)
 
 #### n = 5,000
 
 **Comparisons**
 
-![Comparisons for Workload B n=5,000](charts/bar_B_5000_comparisons.png)
+![Comparisons for Workload B n=5,000](src/charts/bar_B_5000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload B n=5,000](charts/bar_B_5000_structural_ops.png)
+![Structural Operations for Workload B n=5,000](src/charts/bar_B_5000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload B n=5,000](charts/bar_B_5000_inserts.png)
+![Inserts for Workload B n=5,000](src/charts/bar_B_5000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload B n=5,000](charts/bar_B_5000_lookups.png)
+![Lookups for Workload B n=5,000](src/charts/bar_B_5000_lookups.png)
 
 #### n = 10,000
 
 **Comparisons**
 
-![Comparisons for Workload B n=10,000](charts/bar_B_10000_comparisons.png)
+![Comparisons for Workload B n=10,000](src/charts/bar_B_10000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload B n=10,000](charts/bar_B_10000_structural_ops.png)
+![Structural Operations for Workload B n=10,000](src/charts/bar_B_10000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload B n=10,000](charts/bar_B_10000_inserts.png)
+![Inserts for Workload B n=10,000](src/charts/bar_B_10000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload B n=10,000](charts/bar_B_10000_lookups.png)
+![Lookups for Workload B n=10,000](src/charts/bar_B_10000_lookups.png)
 
 #### n = 20,000
 
 **Comparisons**
 
-![Comparisons for Workload B n=20,000](charts/bar_B_20000_comparisons.png)
+![Comparisons for Workload B n=20,000](src/charts/bar_B_20000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload B n=20,000](charts/bar_B_20000_structural_ops.png)
+![Structural Operations for Workload B n=20,000](src/charts/bar_B_20000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload B n=20,000](charts/bar_B_20000_inserts.png)
+![Inserts for Workload B n=20,000](src/charts/bar_B_20000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload B n=20,000](charts/bar_B_20000_lookups.png)
+![Lookups for Workload B n=20,000](src/charts/bar_B_20000_lookups.png)
 
 ---
 
@@ -335,23 +338,23 @@ These charts show how each data structure scales as the workload size grows from
 
 #### Comparisons — Workload C Scaling
 
-![Comparisons scaling for Workload C](charts/line_C_comparisons.png)
+![Comparisons scaling for Workload C](src/charts/line_C_comparisons.png)
 
 #### Structural Operations — Workload C Scaling
 
-![Structural Operations scaling for Workload C](charts/line_C_structural_ops.png)
+![Structural Operations scaling for Workload C](src/charts/line_C_structural_ops.png)
 
 #### Inserts — Workload C Scaling
 
-![Inserts scaling for Workload C](charts/line_C_inserts.png)
+![Inserts scaling for Workload C](src/charts/line_C_inserts.png)
 
 #### Deletes — Workload C Scaling
 
-![Deletes scaling for Workload C](charts/line_C_deletes.png)
+![Deletes scaling for Workload C](src/charts/line_C_deletes.png)
 
 #### Lookups — Workload C Scaling
 
-![Lookups scaling for Workload C](charts/line_C_lookups.png)
+![Lookups scaling for Workload C](src/charts/line_C_lookups.png)
 
 ---
 
@@ -363,89 +366,89 @@ Side-by-side comparison of all four data structures at each workload size.
 
 **Comparisons**
 
-![Comparisons for Workload C n=1,000](charts/bar_C_1000_comparisons.png)
+![Comparisons for Workload C n=1,000](src/charts/bar_C_1000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload C n=1,000](charts/bar_C_1000_structural_ops.png)
+![Structural Operations for Workload C n=1,000](src/charts/bar_C_1000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload C n=1,000](charts/bar_C_1000_inserts.png)
+![Inserts for Workload C n=1,000](src/charts/bar_C_1000_inserts.png)
 
 **Deletes**
 
-![Deletes for Workload C n=1,000](charts/bar_C_1000_deletes.png)
+![Deletes for Workload C n=1,000](src/charts/bar_C_1000_deletes.png)
 
 **Lookups**
 
-![Lookups for Workload C n=1,000](charts/bar_C_1000_lookups.png)
+![Lookups for Workload C n=1,000](src/charts/bar_C_1000_lookups.png)
 
 #### n = 5,000
 
 **Comparisons**
 
-![Comparisons for Workload C n=5,000](charts/bar_C_5000_comparisons.png)
+![Comparisons for Workload C n=5,000](src/charts/bar_C_5000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload C n=5,000](charts/bar_C_5000_structural_ops.png)
+![Structural Operations for Workload C n=5,000](src/charts/bar_C_5000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload C n=5,000](charts/bar_C_5000_inserts.png)
+![Inserts for Workload C n=5,000](src/charts/bar_C_5000_inserts.png)
 
 **Deletes**
 
-![Deletes for Workload C n=5,000](charts/bar_C_5000_deletes.png)
+![Deletes for Workload C n=5,000](src/charts/bar_C_5000_deletes.png)
 
 **Lookups**
 
-![Lookups for Workload C n=5,000](charts/bar_C_5000_lookups.png)
+![Lookups for Workload C n=5,000](src/charts/bar_C_5000_lookups.png)
 
 #### n = 10,000
 
 **Comparisons**
 
-![Comparisons for Workload C n=10,000](charts/bar_C_10000_comparisons.png)
+![Comparisons for Workload C n=10,000](src/charts/bar_C_10000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload C n=10,000](charts/bar_C_10000_structural_ops.png)
+![Structural Operations for Workload C n=10,000](src/charts/bar_C_10000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload C n=10,000](charts/bar_C_10000_inserts.png)
+![Inserts for Workload C n=10,000](src/charts/bar_C_10000_inserts.png)
 
 **Deletes**
 
-![Deletes for Workload C n=10,000](charts/bar_C_10000_deletes.png)
+![Deletes for Workload C n=10,000](src/charts/bar_C_10000_deletes.png)
 
 **Lookups**
 
-![Lookups for Workload C n=10,000](charts/bar_C_10000_lookups.png)
+![Lookups for Workload C n=10,000](src/charts/bar_C_10000_lookups.png)
 
 #### n = 20,000
 
 **Comparisons**
 
-![Comparisons for Workload C n=20,000](charts/bar_C_20000_comparisons.png)
+![Comparisons for Workload C n=20,000](src/charts/bar_C_20000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload C n=20,000](charts/bar_C_20000_structural_ops.png)
+![Structural Operations for Workload C n=20,000](src/charts/bar_C_20000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload C n=20,000](charts/bar_C_20000_inserts.png)
+![Inserts for Workload C n=20,000](src/charts/bar_C_20000_inserts.png)
 
 **Deletes**
 
-![Deletes for Workload C n=20,000](charts/bar_C_20000_deletes.png)
+![Deletes for Workload C n=20,000](src/charts/bar_C_20000_deletes.png)
 
 **Lookups**
 
-![Lookups for Workload C n=20,000](charts/bar_C_20000_lookups.png)
+![Lookups for Workload C n=20,000](src/charts/bar_C_20000_lookups.png)
 
 ---
 
@@ -459,19 +462,19 @@ These charts show how each data structure scales as the workload size grows from
 
 #### Comparisons — Workload D Scaling
 
-![Comparisons scaling for Workload D](charts/line_D_comparisons.png)
+![Comparisons scaling for Workload D](src/charts/line_D_comparisons.png)
 
 #### Structural Operations — Workload D Scaling
 
-![Structural Operations scaling for Workload D](charts/line_D_structural_ops.png)
+![Structural Operations scaling for Workload D](src/charts/line_D_structural_ops.png)
 
 #### Inserts — Workload D Scaling
 
-![Inserts scaling for Workload D](charts/line_D_inserts.png)
+![Inserts scaling for Workload D](src/charts/line_D_inserts.png)
 
 #### Lookups — Workload D Scaling
 
-![Lookups scaling for Workload D](charts/line_D_lookups.png)
+![Lookups scaling for Workload D](src/charts/line_D_lookups.png)
 
 ---
 
@@ -483,73 +486,73 @@ Side-by-side comparison of all four data structures at each workload size.
 
 **Comparisons**
 
-![Comparisons for Workload D n=1,000](charts/bar_D_1000_comparisons.png)
+![Comparisons for Workload D n=1,000](src/charts/bar_D_1000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload D n=1,000](charts/bar_D_1000_structural_ops.png)
+![Structural Operations for Workload D n=1,000](src/charts/bar_D_1000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload D n=1,000](charts/bar_D_1000_inserts.png)
+![Inserts for Workload D n=1,000](src/charts/bar_D_1000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload D n=1,000](charts/bar_D_1000_lookups.png)
+![Lookups for Workload D n=1,000](src/charts/bar_D_1000_lookups.png)
 
 #### n = 5,000
 
 **Comparisons**
 
-![Comparisons for Workload D n=5,000](charts/bar_D_5000_comparisons.png)
+![Comparisons for Workload D n=5,000](src/charts/bar_D_5000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload D n=5,000](charts/bar_D_5000_structural_ops.png)
+![Structural Operations for Workload D n=5,000](src/charts/bar_D_5000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload D n=5,000](charts/bar_D_5000_inserts.png)
+![Inserts for Workload D n=5,000](src/charts/bar_D_5000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload D n=5,000](charts/bar_D_5000_lookups.png)
+![Lookups for Workload D n=5,000](src/charts/bar_D_5000_lookups.png)
 
 #### n = 10,000
 
 **Comparisons**
 
-![Comparisons for Workload D n=10,000](charts/bar_D_10000_comparisons.png)
+![Comparisons for Workload D n=10,000](src/charts/bar_D_10000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload D n=10,000](charts/bar_D_10000_structural_ops.png)
+![Structural Operations for Workload D n=10,000](src/charts/bar_D_10000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload D n=10,000](charts/bar_D_10000_inserts.png)
+![Inserts for Workload D n=10,000](src/charts/bar_D_10000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload D n=10,000](charts/bar_D_10000_lookups.png)
+![Lookups for Workload D n=10,000](src/charts/bar_D_10000_lookups.png)
 
 #### n = 20,000
 
 **Comparisons**
 
-![Comparisons for Workload D n=20,000](charts/bar_D_20000_comparisons.png)
+![Comparisons for Workload D n=20,000](src/charts/bar_D_20000_comparisons.png)
 
 **Structural Operations**
 
-![Structural Operations for Workload D n=20,000](charts/bar_D_20000_structural_ops.png)
+![Structural Operations for Workload D n=20,000](src/charts/bar_D_20000_structural_ops.png)
 
 **Inserts**
 
-![Inserts for Workload D n=20,000](charts/bar_D_20000_inserts.png)
+![Inserts for Workload D n=20,000](src/charts/bar_D_20000_inserts.png)
 
 **Lookups**
 
-![Lookups for Workload D n=20,000](charts/bar_D_20000_lookups.png)
+![Lookups for Workload D n=20,000](src/charts/bar_D_20000_lookups.png)
 
 ---
 
