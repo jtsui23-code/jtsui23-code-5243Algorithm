@@ -120,6 +120,16 @@ The linked list `insert` method checks for duplicates by calling the public `con
 
 ---
 
+## Data Structure Summary
+
+| Structure | Insert | Lookup | Delete | Notes |
+|---|---|---|---|---|
+| BST | O(log n) avg | O(log n) avg | O(log n) avg | Degrades to O(n) if unbalanced |
+| Linked List | O(n) | O(n) | O(n) | Simple but slow at scale |
+| Hash Table | O(1) avg | O(1) avg | O(1) avg | Performance depends on load factor |
+| Sorted Array | O(n) | O(log n) | O(n) | Fast lookup, expensive insert/delete |
+
+---
 ## Workload A
 
 _Insert-heavy workload — primarily insertions and lookups, no deletions._
@@ -556,12 +566,4 @@ Side-by-side comparison of all four data structures at each workload size.
 
 ---
 
-## Data Structure Summary
-
-| Structure | Insert | Lookup | Delete | Notes |
-|---|---|---|---|---|
-| BST | O(log n) avg | O(log n) avg | O(log n) avg | Degrades to O(n) if unbalanced |
-| Linked List | O(n) | O(n) | O(n) | Simple but slow at scale |
-| Hash Table | O(1) avg | O(1) avg | O(1) avg | Performance depends on load factor |
-| Sorted Array | O(n) | O(log n) | O(n) | Fast lookup, expensive insert/delete |
 
