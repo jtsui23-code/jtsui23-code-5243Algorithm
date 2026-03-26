@@ -28,7 +28,7 @@ COLORS = {
     "sortedarray": "#C44E52",
 }
 
-# ── Helpers ───────────────────────────────────────────────────────────────────
+
 
 def load_result(struct_key: str, wtype: str, size: int) -> dict | None:
     fname = f"{struct_key}_results_{wtype}_{size}.json"
