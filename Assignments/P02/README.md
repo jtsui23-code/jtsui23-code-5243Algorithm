@@ -16,8 +16,8 @@ There is no additional code added to count any of the stats we want to collect f
 
 |  #  |  Link |  Description |
 | :-: | ----------- | ---------------------- |
-|  1  | — | Made driver scripts for Hash Table, Linked List, and Ordered Dynamic Array |
-|  2  | — | Updated BST, Hash Table, Linked List, and Ordered Dynamic Array to include `runJobFiles()` and Counters |
+|  1  | [Drivers](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/drivers) | Made driver scripts for Hash Table, Linked List, and Ordered Dynamic Array |
+|  2  | [Data Structures](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/tree/main/Assignments/P02/src/include) | Updated BST, Hash Table, Linked List, and Ordered Dynamic Array to include `runJobFiles()` and Counters |
 |  3  | [makework.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/makework.py) | Python script that creates workloads using the compiled workload generator |
 |  4  | [count_json.py](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/count_json.py) | Compiled workload generator used to produce workload data |
 |  5  | [runexperiments.sh](https://github.com/jtsui23-code/jtsui23-code-5243Algorithm/blob/main/Assignments/P02/src/runexperiments.sh) | Bash script that runs the driver files with generated workloads |
